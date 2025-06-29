@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ввод 4-значного кода</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .code-input {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .code-input input {
+            width: 40px;
+            height: 40px;
+            margin: 0 5px;
+            text-align: center;
+            font-size: 18px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .success-page {
+            text-align: center;
+        }
+        .success-icon {
+            color: #4CAF50;
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+        .config-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 1. ЗДЕСЬ УКАЖИТЕ ВАШ ПРАВИЛЬНЫЙ КОД -->
+    <!-- Замените "1234" на нужный вам 4-значный код -->
+    <script>
+        const correctCode = "6789"; // ← Измените это значение на ваш код
+    </script>
+
+    <div id="mainPage" class="container">
+        <h2>Введите 4-значный код</h2>
+        <form id="codeForm">
+            <div class="code-input">
+                <input type="number" name="digit1" min="0" max="9" maxlength="1" required>
+                <input type="number" name="digit2" min="0" max="9" maxlength="1" required>
+                <input type="number" name="digit3" min="0" max="9" maxlength="1" required>
+                <input type="number" name="digit4" min="0" max="9" maxlength="1" required>
+            </div>
+            <button type="submit" class="submit-btn">Подтвердить</button>
+        </form>
+        
+        <div class="config-info">
+            Текущий установленный код: <strong id="currentCodeDisplay"></strong>
+        </div>
+    </div>
+
+    <div id="successPage" class="container success-page" style="display: none;">
+        <div class="success-icon">✓</div>
+        <h2>Успешный вход!</h2>
+        <p>Вы ввели правильный код.</p>
+        <button onclick="goBack()" class="submit-btn">Вернуться</button>
+    </div>
+
+    <script>
+        // Отображаем текущий код (для информации)
+        document.getElementById('currentCodeDisplay').textContent = correctCode;
+        
+        // Проверка введённого кода
+        document.getElementById('codeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const digit1 = document.querySelector('input[name="digit1"]').value;
+            const digit2 = document.querySelector('input[name="digit2"]').value;
+            const digit3 = document.querySelector('input[name="digit3"]').value;
+            const digit4 = document.querySelector('input[name="digit4"]').value;
+            
+            const enteredCode = digit1 + digit2 + digit3 + digit4;
+            
+            if (enteredCode === correctCode) {
+                // Показываем страницу успеха
+                document.getElementById('mainPage').style.display = 'none';
+                document.getElementById('successPage').style.display = 'block';
+            } else {
+                alert("Неверный код! Попробуйте снова.");
+                // Очищаем поля ввода
+                document.querySelectorAll('.code-input input').forEach(input => {
+                    input.value = '';
+                });
+                // Фокусируемся на первом поле
+                document.querySelector('input[name="digit1"]').focus();
+            }
+        });
+        
+        // Возврат на главную страницу
+        function goBack() {
+            document.getElementById('successPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+            // Очищаем поля ввода
+            document.querySelectorAll('.code-input input').forEach(input => {
+                input.value = '';
+            });
+            document.querySelector('input[name="digit1"]').focus();
+        }
+        
+        // Скрипт для автоматического перехода между полями ввода
+        document.querySelectorAll('.code-input input').forEach((input, index, inputs) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length > 0) {
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                }
+            });
+            
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value.length === 0) {
+                    if (index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
